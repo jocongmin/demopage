@@ -1,31 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
-	<meta content="telephone=no" name="format-detection"/>
-	<meta name="description" content=""/>
-	<meta name="keywords" content=""/>
-	<title>demo - pageSlider</title>
-	<!--引入pageSlider所需样式表-->
-	<link rel="stylesheet" href="./dist/pageSlider.css">
-	<!--引入zepto.js-->
-	<script src="http://cdn.bootcss.com/zepto/1.1.4/zepto.js"></script>
-	<!--引入pageSlider.js文件-->
-	<script src="./dist/pageSlider.js"></script>
-<body>
-	<!--DOM结构-->
-	<div class="section sec1" style="background-color:#FFCCCC;">姚艺容</div>
-	<div class="section sec2" style="background-color:#4ACBF7;">周聪敏</div>
-	<div class="section sec3" style="background-color:#63E339;">love</div>
-	<div class="section sec4" style="background-color:#F7D34A;">4</div>
-	<div class="section sec5" style="background-color:#FF8ECE;">5</div>
-	<div class="section sec6" style="background-color:#ACDCED;">6</div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta name="format-detection" content="telephone=no, email=no">
+    <title>default</title>
+    <link rel="stylesheet" href="./css/style.css"/>
+    <link rel="stylesheet" href="css/animate.css">
+    <!--custom style-->
+    <style>
+        .current .title{
+            -webkit-animation: slideToTop .8s ease both;
+        }
 
-	<script>
-		//$(function(){
-			var pageSlider = PageSlider.case();
-		//});
-	</script>
+        .current .subtitle{
+            -webkit-animation: slideToTop .8s 0.3s ease both;
+        }
+        img{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrap">
+    <div class="page">
+        <img src="./img/img (1).jpg" height="1280" width="950" alt="">
+    </div>
+</div>
+
+<script src="./js/zepto.min.js"></script>
+<script src="./js/PageSlider.js"></script>
+<script>
+    var all=48;
+    var promise = new Promise(function(resolve, reject) {
+        var tarFn=function(){
+            var box=$('.page-wrap');
+            var allEl="";
+            for(var i=1;i<all+1;i++){
+                var item="<div class='page'>"
+                            +"<img src='./img/img ("+i+").jpg' height='1280' width='950' alt=''>"
+                        +"</div>";
+                allEl+=item;
+                if(i==all){
+                    box.html(allEl);
+                    return true;
+                }
+            };
+        }
+        var result=tarFn();
+        console.log(result)
+        if (result){
+            resolve(true);
+        } else {
+            reject(false);
+        }
+    });
+    promise.then(function(data){
+        pagefn();
+    });
+    var pagefn=function(){
+        console.log('start')
+        var time;
+        var actShow=function(){
+            var e=$('.current').find('img');
+                var arr=["bounce","flash","pulse","rubberBand","shake","headShake","swing","tada","wobble","jello","bounceIn","bounceInDown","bounceInLeft","bounceInRight","bounceInUp","fadeIn","fadeInDown","fadeInDownBig","fadeInLeft","fadeInLeftBig","fadeInRight","fadeInRightBig","fadeInUp","fadeInUpBig","flipInX","flipInYlightSpeedIn","rotateIn","rotateInDownLeft","rotateInDownRight","rotateInUpLeft","rotateInUpRight","hinge","rollIn","zoomIn","zoomInDown","zoomInLeft","zoomInRight","zoomInUp","slideInDown","slideInLeft","slideInRight","slideInUp"];
+                function GetRandomNum(Min,Max)
+                {   
+                    var Range = Max - Min;   
+                    var Rand = Math.random();   
+                    return(Min + Math.round(Rand * Range));   
+                }
+                var num = GetRandomNum(1,arr.length);
+                var randomAct=arr[num];
+                e.addClass('animated '+randomAct);
+                time=setTimeout(function(){
+                    e.removeAttr('class')
+                },1500);
+        }
+        var p = new PageSlider({
+            pages: $('.page-wrap .page'),
+            onSwipeUp: function () {
+                var el=$('.current').find('img');
+                el.removeAttr('class');
+                clearTimeout(time);
+            },
+            onchange: function () {
+                actShow();
+            }
+        });
+    }
+</script>
 </body>
 </html>
